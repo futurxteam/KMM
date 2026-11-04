@@ -2,7 +2,7 @@ import axios from 'axios'
 import { TOKEN_KEY } from '../utils/constants'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://kmm-2.onrender.com/api',
   timeout: 15000,
 })
 
