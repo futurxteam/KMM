@@ -1,8 +1,7 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AuthContext } from './authContextObject'
 import { fetchMe, loginAdmin, loginPA, logoutRequest } from '../services/authService'
 import { TOKEN_KEY } from '../utils/constants'
-
-export const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -52,4 +51,3 @@ export function AuthProvider({ children }) {
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-

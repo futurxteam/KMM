@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Inbox, UserCheck, RotateCcw, Eye } from 'lucide-rea
 import { Card, EmptyState, ErrorState, Spinner } from '../../components/ui/Common'
 import { StatusBadge } from '../../components/ui/Badges'
 import Pagination from '../../components/ui/Pagination'
-import { isFilterReady } from '../../components/ui/DateFilter'
+import { isFilterReady } from '../../utils/dateFilterUtils'
 import EnquiryFilterBar from '../../components/ui/EnquiryFilterBar'
 import EnquiryMobileCard from '../../components/ui/EnquiryMobileCard'
 import { ConfirmDialog } from '../../components/ui/Modal'

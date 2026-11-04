@@ -8,23 +8,44 @@ export default function useCourses() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const load = useCallback(async (silent = false) => {
+  const load = useCallback((silent = false) => {
     if (!silent) setLoading(true)
-    try {
-      setCourses(await fetchCourses())
-      setError('')
-    } catch {
-      setError('Unable to load courses. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    return fetchCourses()
+      .then((list) => {
+        setCourses(list)
+        setError('')
+      })
+      .catch(() => {
+        setError('Unable to load courses. Please try again.')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [])
 
   useEffect(() => {
-    load()
-    const onVisible = () => document.visibilityState === 'visible' && load(true)
+    let active = true
+    fetchCourses()
+      .then((list) => {
+        if (!active) return
+        setCourses(list)
+        setError('')
+      })
+      .catch(() => {
+        if (active) setError('Unable to load courses. Please try again.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load(true)
+    }
     document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
+    return () => {
+      active = false
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [load])
 
   return { courses, loading, error, reload: load }

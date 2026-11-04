@@ -1,38 +1,10 @@
 import { useState } from 'react'
 import { CalendarDays } from 'lucide-react'
-
-export const PRESETS = [
-  { value: 'all', label: 'All time' },
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'last7', label: 'Last 7 days' },
-  { value: 'last30', label: 'Last 30 days' },
-  { value: 'thisMonth', label: 'This month' },
-  { value: 'lastMonth', label: 'Previous month' },
-  { value: 'thisYear', label: 'This year' },
-]
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-export const formatDateFilterSummary = (v) => {
-  if (!v) return ''
-  if (v.year) {
-    const m = v.month ? ` ${MONTHS[Number(v.month) - 1]?.slice(0, 3)}` : ''
-    const d = v.day ? ` ${v.day}` : ''
-    return `${v.year}${m}${d}`
-  }
-  if (v.preset === 'custom') {
-    if (v.from && v.to) return `${v.from} → ${v.to}`
-    if (v.from) return `From ${v.from}`
-    return ''
-  }
-  if (!v.preset || v.preset === 'all') return ''
-  return PRESETS.find((p) => p.value === v.preset)?.label || v.preset
-}
+import { MONTHS, PRESETS, THIS_YEAR, getDaysInMonth } from '../../utils/dateFilterUtils'
 
 // `value` is the query-param object consumed by the API: { preset } | { preset:'custom', from, to } | { year, month?, day? }
 // Compact mode selector + inputs; emits the param object through onChange.
 export default function DateFilter({ value, onChange, stacked = false }) {
-  const thisYear = new Date().getFullYear()
   const [prevVal, setPrevVal] = useState(value)
   const [mode, setMode] = useState(value.year ? 'ymd' : value.preset === 'custom' ? 'custom' : 'preset')
 
@@ -46,7 +18,7 @@ export default function DateFilter({ value, onChange, stacked = false }) {
     setMode(m)
     if (m === 'preset') onChange({ preset: 'last30' })
     if (m === 'custom') onChange({ preset: 'custom', from: '', to: '' })
-    if (m === 'ymd') onChange({ year: String(thisYear) })
+    if (m === 'ymd') onChange({ year: String(THIS_YEAR) })
   }
 
   const setYmd = (patch) => {
@@ -131,11 +103,11 @@ export default function DateFilter({ value, onChange, stacked = false }) {
               <label className="mb-1 block text-xs font-medium text-slate-600">Year</label>
               <select
                 value={value.year || ''}
-                onChange={(e) => setYmd({ year: e.target.value || String(thisYear) })}
+                onChange={(e) => setYmd({ year: e.target.value || String(THIS_YEAR) })}
                 className="field"
                 aria-label="Year"
               >
-                {Array.from({ length: 6 }, (_, i) => thisYear - i).map((y) => (
+                {Array.from({ length: 6 }, (_, i) => THIS_YEAR - i).map((y) => (
                   <option key={y} value={y}>{y}</option>
                 ))}
               </select>
@@ -164,7 +136,7 @@ export default function DateFilter({ value, onChange, stacked = false }) {
                 aria-label="Day"
               >
                 <option value="">All</option>
-                {Array.from({ length: new Date(Number(value.year) || thisYear, Number(value.month) || 1, 0).getDate() }, (_, i) => i + 1).map((d) => (
+                {Array.from({ length: getDaysInMonth(value.year, value.month) }, (_, i) => i + 1).map((d) => (
                   <option key={d} value={d}>{d}</option>
                 ))}
               </select>
@@ -202,8 +174,8 @@ export default function DateFilter({ value, onChange, stacked = false }) {
 
       {mode === 'ymd' && (
         <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
-          <select value={value.year || ''} onChange={(e) => setYmd({ year: e.target.value || String(thisYear) })} className="field !w-auto flex-1 sm:flex-initial" aria-label="Year">
-            {Array.from({ length: 6 }, (_, i) => thisYear - i).map((y) => (
+          <select value={value.year || ''} onChange={(e) => setYmd({ year: e.target.value || String(THIS_YEAR) })} className="field !w-auto flex-1 sm:flex-initial" aria-label="Year">
+            {Array.from({ length: 6 }, (_, i) => THIS_YEAR - i).map((y) => (
               <option key={y} value={y}>{y}</option>
             ))}
           </select>
@@ -215,7 +187,7 @@ export default function DateFilter({ value, onChange, stacked = false }) {
           </select>
           <select value={value.day || ''} disabled={!value.month} onChange={(e) => setYmd({ day: e.target.value })} className="field !w-auto flex-1 sm:flex-initial" aria-label="Day">
             <option value="">All days</option>
-            {Array.from({ length: new Date(Number(value.year) || thisYear, Number(value.month) || 1, 0).getDate() }, (_, i) => i + 1).map((d) => (
+            {Array.from({ length: getDaysInMonth(value.year, value.month) }, (_, i) => i + 1).map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
@@ -224,6 +196,3 @@ export default function DateFilter({ value, onChange, stacked = false }) {
     </div>
   )
 }
-
-// Custom range is only sent to the API once both dates are chosen.
-export const isFilterReady = (v) => v.preset !== 'custom' || Boolean(v.from && v.to)

@@ -1,8 +1,21 @@
 import axios from 'axios'
 import { TOKEN_KEY } from '../utils/constants'
 
+const DEFAULT_API_BASE_URL = 'https://kmm-2.onrender.com/api'
+
+function resolveBaseUrl(raw) {
+  const trimmed = (raw || '').trim().replace(/\/+$/, '')
+  if (!trimmed) return DEFAULT_API_BASE_URL
+  const withProtocol = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : /^(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(trimmed)
+      ? `http://${trimmed}`
+      : `https://${trimmed}`
+  return withProtocol.endsWith('/api') ? withProtocol : `${withProtocol}/api`
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://kmm-2.onrender.com/api',
+  baseURL: resolveBaseUrl(import.meta.env.VITE_API_BASE_URL),
   timeout: 15000,
 })
 
@@ -33,4 +46,3 @@ export const getErrorInfo = (error) => {
 }
 
 export default api
-

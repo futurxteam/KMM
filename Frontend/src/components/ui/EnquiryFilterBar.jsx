@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Search, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react'
-import DateFilter, { formatDateFilterSummary, isFilterReady } from './DateFilter'
+import DateFilter from './DateFilter'
+import { formatDateFilterSummary, isFilterReady } from '../../utils/dateFilterUtils'
 import Modal from './Modal'
 
 export default function EnquiryFilterBar({
