@@ -31,12 +31,6 @@ export default function Navbar({ title, user, collapsed, onToggleCollapse, onOpe
         >
           {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
         </button>
-        <img
-          src="/kmm.webp"
-          alt="KMM College"
-          className="h-8 w-auto shrink-0 object-contain sm:h-9"
-        />
-        <span className="hidden h-6 w-px bg-slate-200 sm:block" />
         <div className="min-w-0 leading-tight">
           <h1 className="truncate text-sm font-semibold text-slate-900 sm:text-base">{title}</h1>
           <p className="hidden truncate text-xs text-slate-500 sm:block">
