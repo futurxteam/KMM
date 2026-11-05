@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { BookOpen, GraduationCap, LayoutDashboard, LogOut, MessageSquareText, Users, X } from 'lucide-react'
+import { BookOpen, LayoutDashboard, LogOut, MessageSquareText, Users, X } from 'lucide-react'
 
 const NAV = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -12,16 +12,12 @@ const NAV = [
 
 function Brand({ collapsed }) {
   return (
-    <div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-100 px-5">
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-600 text-white">
-        <GraduationCap className="h-5 w-5" />
-      </div>
-      {!collapsed && (
-        <div className="min-w-0 leading-tight">
-          <p className="truncate text-sm font-bold text-slate-900">KMM College</p>
-          <p className="truncate text-[11px] text-slate-500">Enquiry Manager</p>
-        </div>
-      )}
+    <div className={`flex h-16 shrink-0 items-center border-b border-slate-100 ${collapsed ? 'justify-center px-2' : 'px-4'}`}>
+      <img
+        src="/kmm.webp"
+        alt="KMM College"
+        className={collapsed ? 'h-9 w-9 object-contain object-left' : 'h-10 w-auto object-contain'}
+      />
     </div>
   )
 }
